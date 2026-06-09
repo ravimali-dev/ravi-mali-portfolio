@@ -1,0 +1,8 @@
+{
+  "name": "Remix: Ravi Mali Portfolio",
+  "description": "A premium, interactive developer portfolio for Ravi Mali, Frontend \u0026 Future Full Stack Engineer.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
