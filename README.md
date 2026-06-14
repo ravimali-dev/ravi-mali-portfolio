@@ -4,7 +4,7 @@ Welcome to my personal portfolio website! This project showcases my skills, proj
 
 ## 🌐 Live Demo
 
-> https://github.com/ravimali-dev
+> https://ravimali.vercel.app/
 
 ## 📌 About
 
