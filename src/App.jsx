@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, ChangeEvent, FormEvent } from "react";
+import { useState, useEffect, useRef } from "react";
 import { 
   Code, Cpu, Palette, Layout, Sparkles, Server, FolderGit2,
   Database, Layers, GitBranch, Terminal, Send, Github, 
@@ -11,25 +11,24 @@ import { AreaChart, Area, XAxis, YAxis, Tooltip as ChartTooltip, ResponsiveConta
 import Navbar from "./components/Navbar";
 import { generateResumePdf } from "./utils/pdfGenerator";
 import { PROJECTS, SKILL_CATEGORIES, EXPERIENCE_TIMELINE, TESTIMONIALS, CERTIFICATIONS } from "./data";
-import { Project, ChatMessage, ContactFormData, ContactMessageLog, Certification } from "./types";
 
 export default function App() {
   const [activeSection, setActiveSection] = useState("home");
   const [activeFilter, setActiveFilter] = useState("All");
-  const [selectedTechs, setSelectedTechs] = useState<string[]>([]);
+  const [selectedTechs, setSelectedTechs] = useState([]);
   
   // AI Twin Chat Bot States
   const [isAssistantOpen, setIsAssistantOpen] = useState(false);
   const [chatInput, setChatInput] = useState("");
   const [chatLoading, setChatLoading] = useState(false);
-  const [chatHistory, setChatHistory] = useState<ChatMessage[]>([
+  const [chatHistory, setChatHistory] = useState([
     {
       role: "model",
       text: "Hello there! 👋 I am **Ravi's AI Twin**, trained to answer questions about his software development skills, professional internships, featured projects, and career aspirations. How can I help you today?",
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
   ]);
-  const chatBottomRef = useRef<HTMLDivElement>(null);
+  const chatBottomRef = useRef(null);
 
   // Animated counters
   const [projectsCount, setProjectsCount] = useState(0);
@@ -38,29 +37,29 @@ export default function App() {
   const [internMinutes, setInternMinutes] = useState(0);
 
   // Contact form state
-  const [formData, setFormData] = useState<ContactFormData>({
+  const [formData, setFormData] = useState({
     name: "",
     email: "",
     subject: "",
     message: ""
   });
-  const [formErrors, setFormErrors] = useState<Partial<ContactFormData>>({});
+  const [formErrors, setFormErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   
   // Received messages logged in the browser for recruiters to audit
-  const [recruiterMessages, setRecruiterMessages] = useState<ContactMessageLog[]>([]);
+  const [recruiterMessages, setRecruiterMessages] = useState([]);
   const [showRecruiterLogs, setShowRecruiterLogs] = useState(false);
 
   // Sound preview alert states
-  const [systemAlert, setSystemAlert] = useState<string | null>(null);
+  const [systemAlert, setSystemAlert] = useState(null);
 
   // Resume downloading states
   const [downloadingResume, setDownloadingResume] = useState(false);
   const [downloadSuccess, setDownloadSuccess] = useState(false);
 
   // Custom Avatar States with local persistence & automatic format checks
-  const [avatarSrc, setAvatarSrc] = useState<string | null>(() => {
+  const [avatarSrc, setAvatarSrc] = useState(() => {
     return localStorage.getItem("ravi_portfolio_avatar");
   });
   const [avatarError, setAvatarError] = useState(false);
@@ -87,12 +86,12 @@ export default function App() {
     }
   };
 
-  const handleAvatarUpload = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarUpload = (e) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        const base64String = reader.result as string;
+        const base64String = reader.result;
         try {
           localStorage.setItem("ravi_portfolio_avatar", base64String);
           setAvatarSrc(base64String);
@@ -109,12 +108,12 @@ export default function App() {
   // GitHub Integration States
   const [githubUsername, setGithubUsername] = useState("ravimali-dev");
   const [searchUsernameInput, setSearchUsernameInput] = useState("ravimali-dev");
-  const [githubData, setGithubData] = useState<any>(null);
+  const [githubData, setGithubData] = useState(null);
   const [githubLoading, setGithubLoading] = useState(false);
-  const [githubError, setGithubError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<"heatmap" | "chart">("heatmap");
+  const [githubError, setGithubError] = useState(null);
+  const [activeTab, setActiveTab] = useState("heatmap");
 
-  const fetchGithubData = async (username: string) => {
+  const fetchGithubData = async (username) => {
     setGithubLoading(true);
     setGithubError(null);
     try {
@@ -205,16 +204,16 @@ export default function App() {
   }, [chatHistory, chatLoading]);
 
   // Handle Form Validation & Submission
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    if (formErrors[name as keyof ContactFormData]) {
+    if (formErrors[name]) {
       setFormErrors(prev => ({ ...prev, [name]: "" }));
     }
   };
 
-  const validateForm = (): boolean => {
-    const errors: Partial<ContactFormData> = {};
+  const validateForm = () => {
+    const errors = {};
     if (!formData.name.trim()) errors.name = "Your name is required";
     if (!formData.email.trim()) {
       errors.email = "Email is required";
@@ -228,7 +227,7 @@ export default function App() {
     return Object.keys(errors).length === 0;
   };
 
-  const handleFormSubmit = async (e: FormEvent) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
 
@@ -257,11 +256,11 @@ export default function App() {
   };
 
   // Chat request with Gemini
-  const handleSendMessage = async (e: FormEvent) => {
+  const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!chatInput.trim() || chatLoading) return;
 
-    const userMsg: ChatMessage = {
+    const userMsg = {
       role: "user",
       text: chatInput,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
@@ -314,7 +313,7 @@ export default function App() {
   };
 
   // Helper alert popover
-  const triggerSystemAlert = (msg: string) => {
+  const triggerSystemAlert = (msg) => {
     setSystemAlert(msg);
     setTimeout(() => setSystemAlert(null), 4000);
   };
@@ -358,7 +357,7 @@ export default function App() {
   };
 
   // Match corresponding icon names to Lucide elements
-  const renderSkillIcon = (iconName: string) => {
+  const renderSkillIcon = (iconName) => {
     switch (iconName) {
       case "Code": return <Code className="w-5 h-5 text-[#FF6B4A]" />;
       case "Cpu": return <Cpu className="w-5 h-5 text-[#FF6B4A]" />;
@@ -565,7 +564,7 @@ export default function App() {
             </div>
 
             <div className="absolute bottom-6 -right-2 bg-[#0D1B2A]/90 backdrop-blur-md border border-white/15 px-4 py-2.5 rounded-2xl shadow-xl flex items-center gap-2.5 select-none animate-float-delayed">
-              <span className="text-[#FF7B54] font-bold font-mono text-sm">TypeScript</span>
+              <span className="text-[#FF7B54] font-bold font-mono text-sm">JavaScript</span>
             </div>
 
             <div className="absolute bottom-12 -left-4 bg-[#0D1B2A]/90 backdrop-blur-md border border-white/15 px-4 py-2.5 rounded-2xl shadow-xl flex items-center gap-2.5 select-none animate-float">
@@ -646,7 +645,7 @@ export default function App() {
                   I deeply care about structured layouts, elegant color balances, and responsive accessibility parameters. Over my internships, I’ve refined a rigorous component strategy, utilizing React trees alongside Express setups to execute clean API communications quickly.
                 </p>
                 <p>
-                  My immediate goal is to contribute to high-growth development engineering clusters where I can apply my knowledge, write robust typescript pipelines, and team up on production-scale web client systems.
+                  My immediate goal is to contribute to high-growth development engineering clusters where I can apply my knowledge, write robust JavaScript structures, and team up on production-scale web client systems.
                 </p>
               </div>
             </div>
@@ -1115,7 +1114,7 @@ export default function App() {
               </p>
 
               {/* Dynamic Search Box */}
-              <form onSubmit={(e: FormEvent) => {
+              <form onSubmit={(e) => {
                 e.preventDefault();
                 if (!searchUsernameInput.trim()) return;
                 setGithubUsername(searchUsernameInput.trim());
@@ -1126,7 +1125,7 @@ export default function App() {
                   <input
                     type="text"
                     value={searchUsernameInput}
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => setSearchUsernameInput(e.target.value)}
+                    onChange={(e) => setSearchUsernameInput(e.target.value)}
                     placeholder="Enter github username"
                     className="w-full bg-transparent text-xs text-white placeholder:text-[#5B687C] focus:outline-none font-mono"
                   />
@@ -1165,7 +1164,7 @@ export default function App() {
                   className="w-16 h-16 rounded-xl border border-white/10 shadow-lg object-cover"
                   onError={(e) => {
                     // Fallback avatar if error
-                    (e.target as HTMLImageElement).src = `https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe-profile`;
+                    e.target.src = `https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe-profile`;
                   }}
                 />
                 <div className="text-left flex-1 min-w-0">
@@ -1244,7 +1243,7 @@ export default function App() {
                         
                         <div className="flex-1">
                           <div className="grid grid-flow-col grid-rows-7 gap-1.5 p-2 bg-black/25 rounded-xl overflow-x-auto min-w-[280px] h-32">
-                            {githubData.activity.map((day: any) => {
+                            {githubData.activity.map((day) => {
                               let bgColor = "bg-white/5";
                               if (day.count === 1) bgColor = "bg-green-500/10 border border-green-500/5";
                               else if (day.count === 2) bgColor = "bg-[#FF6B4A]/25 border border-[#FF6B4A]/10";
@@ -1308,7 +1307,7 @@ export default function App() {
                           />
                           <YAxis stroke="#5B687C" fontSize={9} width={30} tickLine={false} />
                           <ChartTooltip
-                            content={({ active, payload }: any) => {
+                            content={({ active, payload }) => {
                               if (active && payload && payload.length) {
                                 return (
                                   <div className="bg-[#0D1B2A] border border-[#FF6B4A]/30 p-2 rounded-lg text-[10px] font-mono shadow-2xl text-left">
@@ -1343,7 +1342,7 @@ export default function App() {
                         SSH Secure Commit Logs Stream
                       </span>
                       <div className="space-y-1.5 max-h-24 overflow-y-auto pr-1">
-                        {githubData.recentCommits.map((cmt: any, cIdx: number) => (
+                        {githubData.recentCommits.map((cmt, cIdx) => (
                           <div key={cIdx} className="flex items-center justify-between gap-3 text-[10px] font-mono bg-black/15 p-1.5 px-2.5 rounded border border-white/5 hover:border-white/10 transition-colors">
                             <div className="flex items-center gap-2 truncate">
                               <span className="text-green-500">✔</span>

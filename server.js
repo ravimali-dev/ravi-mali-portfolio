@@ -3,7 +3,7 @@ import path from "path";
 import fs from "fs";
 import nodemailer from "nodemailer";
 import { createServer as createViteServer } from "vite";
-import { GoogleGenAI, GenerateContentResponse, GenerateVideosOperation } from "@google/genai";
+import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -29,7 +29,7 @@ function readMessages() {
 }
 
 // Helper to save messages
-function saveMessages(messages: any[]) {
+function saveMessages(messages) {
   try {
     fs.writeFileSync(MESSAGES_FILE, JSON.stringify(messages, null, 2), "utf-8");
   } catch (error) {
@@ -38,7 +38,7 @@ function saveMessages(messages: any[]) {
 }
 
 // Helper to send email notifications via Nodemailer
-async function sendEmailNotification(name: string, email: string, subject: string, message: string) {
+async function sendEmailNotification(name, email, subject, message) {
   const user = process.env.EMAIL_USER;
   const pass = process.env.EMAIL_PASS;
 
@@ -99,6 +99,20 @@ Notification sent from: ${process.env.APP_URL || "Local Node.js Server"}`,
     return true;
   } catch (error) {
     console.error("Nodemailer failed to send email:", error);
+    const errMsg = error.message || "";
+    if (error.code === "EAUTH" || errMsg.includes("535-5.7.8") || errMsg.includes("Username and Password not accepted")) {
+      console.error("\n========================= Gmail SMTP Authentication Failure =========================");
+      console.error("🚨 Gmail security rejected the login credentials provided.");
+      console.error("💡 Cause: You are likely using your standard Google Account account password.");
+      console.error("🛠️  Solution: You must use a 16-digit Google 'App Password'.");
+      console.error("👉 Follow these steps to resolve:");
+      console.error("   1. Enable '2-Step Verification' on your Google account.");
+      console.error("   2. Visit: https://myaccount.google.com/apppasswords");
+      console.error("   3. Generate an App Password (select App as 'Mail' or 'Other', then choose device).");
+      console.error("   4. Copy the generated 16-digit code (e.g. 'abcd efgh ijkl mnop').");
+      console.error("   5. Update EMAIL_PASS with this 16-character code (without spaces) in your .env / Secrets.");
+      console.error("====================================================================================\n");
+    }
     return false;
   }
 }
@@ -146,12 +160,12 @@ app.delete("/api/messages", (req, res) => {
 });
 
 // Memory cache for GitHub developer data to avoid rate limit throttling
-const githubCache: Record<string, { data: any; expiry: number }> = {};
+const githubCache = {};
 const CACHE_DURATION_MS = 10 * 60 * 1000; // 10 minutes cache
 
 // API endpoint to fetch dynamic GitHub contribution calendar & developer metrics
 app.get("/api/github/profile", async (req, res) => {
-  const username = (req.query.username as string || "ravimali-dev").trim();
+  const username = (req.query.username || "ravimali-dev").trim();
 
   // Check cache first
   const cached = githubCache[username];
@@ -159,7 +173,7 @@ app.get("/api/github/profile", async (req, res) => {
     return res.json(cached.data);
   }
 
-  const headers: Record<string, string> = {
+  const headers = {
     "User-Agent": "aistudio-build",
     "Accept": "application/vnd.github.v3+json",
   };
@@ -178,20 +192,20 @@ app.get("/api/github/profile", async (req, res) => {
     if (reposRes.ok) {
       const repos = await reposRes.json();
       if (Array.isArray(repos)) {
-        totalStars = repos.reduce((sum: number, repo: any) => sum + (repo.stargazers_count || 0), 0);
+        totalStars = repos.reduce((sum, repo) => sum + (repo.stargazers_count || 0), 0);
       }
     }
 
     // Fetch public events (which contain push activity)
     const eventsRes = await fetch(`https://api.github.com/users/${username}/events?per_page=100`, { headers });
-    let events: any[] = [];
+    let events = [];
     if (eventsRes.ok) {
       events = await eventsRes.json();
     }
 
     // Process contribution data (heat map for last 140 days -> 20 weeks)
-    const activityMap: Record<string, number> = {};
-    const dateArray: { date: string; count: number }[] = [];
+    const activityMap = {};
+    const dateArray = [];
     const today = new Date();
 
     // Initialize last 140 days with 0
@@ -203,10 +217,10 @@ app.get("/api/github/profile", async (req, res) => {
     }
 
     // Populate counts from events
-    let recentCommits: any[] = [];
+    let recentCommits = [];
 
     if (Array.isArray(events)) {
-      events.forEach((evt: any) => {
+      events.forEach((evt) => {
         if (!evt.created_at) return;
         const dateString = evt.created_at.split("T")[0];
         
@@ -218,7 +232,7 @@ app.get("/api/github/profile", async (req, res) => {
 
             // Collect recent commits for visual list
             if (evt.payload.commits && Array.isArray(evt.payload.commits)) {
-              evt.payload.commits.forEach((c: any) => {
+              evt.payload.commits.forEach((c) => {
                 if (recentCommits.length < 5) {
                   recentCommits.push({
                     sha: c.sha ? c.sha.substring(0, 7) : "commit",
@@ -273,13 +287,13 @@ app.get("/api/github/profile", async (req, res) => {
 
     return res.json(resultData);
 
-  } catch (error: any) {
+  } catch (error) {
     console.error("GitHub Fetch Error, returning fallback mockup:", error.message);
     
     // GENERATE EXCELLENT FALLBACK DATA matching the username
     const today = new Date();
-    const dateArray: { date: string; count: number }[] = [];
-    const activityMap: Record<string, number> = {};
+    const dateArray = [];
+    const activityMap = {};
 
     // Initialize last 140 days
     for (let i = 139; i >= 0; i--) {
@@ -338,7 +352,7 @@ app.get("/api/github/profile", async (req, res) => {
 });
 
 // Helper for fallback responses when Gemini is unavailable (e.g., 503 overload)
-function getOfflineFallbackResponse(prompt: string): string {
+function getOfflineFallbackResponse(prompt) {
   const query = prompt.toLowerCase();
   
   if (query.includes("project") || query.includes("portfolio") || query.includes("work") || query.includes("build")) {
@@ -400,10 +414,10 @@ app.post("/api/chat", async (req, res) => {
   }
 
   const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) {
-    return res.status(503).json({
-      error: "The Gemini API key is missing. Please add it via the Settings > Secrets tab to activate the chatbot.",
-    });
+  if (!apiKey || apiKey === "MY_GEMINI_API_KEY") {
+    const fallbackResponse = getOfflineFallbackResponse(prompt);
+    const notice = `*💡 **Local Dev Tip:** To activate actual server-side Gemini AI responses on your local machine, create a \`.env\` file in the root folder and define \`GEMINI_API_KEY=your_key_here\` (get your free key at https://aistudio.google.com/). Currently running on high-fidelity offline fallback mode!*\n\n`;
+    return res.json({ response: notice + fallbackResponse });
   }
 
   try {
@@ -456,7 +470,7 @@ Here is Ravi Mali's professional developer background:
     for (const model of modelsToTry) {
       try {
         if (history && Array.isArray(history)) {
-          const formattedHistory = history.map((h: any) => ({
+          const formattedHistory = history.map((h) => ({
             role: h.role === "user" ? "user" : "model",
             parts: [{ text: h.text }],
           })).slice(0, 10);
@@ -487,7 +501,7 @@ Here is Ravi Mali's professional developer background:
         if (responseText) {
           break; // Success! Break out of the loop
         }
-      } catch (err: any) {
+      } catch (err) {
         console.warn(`Gemini model ${model} failed:`, err.message || err);
         lastError = err;
       }
@@ -502,7 +516,7 @@ Here is Ravi Mali's professional developer background:
     const fallbackResponse = getOfflineFallbackResponse(prompt);
     return res.json({ response: fallbackResponse });
 
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error calling Gemini API client wrapper:", error);
     const fallbackResponse = getOfflineFallbackResponse(prompt);
     return res.json({ response: fallbackResponse });

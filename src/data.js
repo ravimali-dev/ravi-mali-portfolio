@@ -1,6 +1,4 @@
-import { SkillCategory, Project, Experience, Testimonial, Certification } from "./types";
-
-export const SKILL_CATEGORIES: SkillCategory[] = [
+export const SKILL_CATEGORIES = [
   {
     title: "Frontend Development",
     skills: [
@@ -35,7 +33,7 @@ export const SKILL_CATEGORIES: SkillCategory[] = [
   },
 ];
 
-export const PROJECTS: Project[] = [
+export const PROJECTS = [
   {
     id: "videoconf",
     title: "Live Video Conferencing & Chat App",
@@ -68,7 +66,7 @@ export const PROJECTS: Project[] = [
   },
 ];
 
-export const EXPERIENCE_TIMELINE: Experience[] = [
+export const EXPERIENCE_TIMELINE = [
   {
     role: "Bachelor of Computer Applications (BCA)",
     company: "Apex University | Jaipur, India",
@@ -82,11 +80,11 @@ export const EXPERIENCE_TIMELINE: Experience[] = [
       "Studying modern web standards including React, Node.js, and client state orchestration.",
       "Mastering relational (MySQL) and non-relational (MongoDB) database design paradigms."
     ],
-    techUsed: ["JavaScript", "TypeScript", "React", "Express", "Node.js", "MongoDB", "MySQL", "Git", "GitHub"]
+    techUsed: ["JavaScript", "React", "Express", "Node.js", "MongoDB", "MySQL", "Git", "GitHub"]
   },
 ];
 
-export const TESTIMONIALS: Testimonial[] = [
+export const TESTIMONIALS = [
   {
     id: "t1",
     name: "Sarah Jenkins",
@@ -116,7 +114,7 @@ export const TESTIMONIALS: Testimonial[] = [
   },
 ];
 
-export const CERTIFICATIONS: Certification[] = [
+export const CERTIFICATIONS = [
   {
     id: "cert-aws",
     title: "AWS Certified Cloud Practitioner",
@@ -158,4 +156,3 @@ export const CERTIFICATIONS: Certification[] = [
     verificationUrl: "https://coursera.org/verify/googleux",
   }
 ];
-
