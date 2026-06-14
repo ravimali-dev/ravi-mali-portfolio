@@ -13,7 +13,9 @@ const PORT = 3000;
 
 app.use(express.json());
 
-const MESSAGES_FILE = path.join(process.cwd(), "messages.json");
+const MESSAGES_FILE = process.env.VERCEL
+  ? path.join("/tmp", "messages.json")
+  : path.join(process.cwd(), "messages.json");
 
 // Helper to read messages
 function readMessages() {
@@ -544,4 +546,9 @@ async function bootstrap() {
   });
 }
 
-bootstrap();
+// Only boot and bind port locally; let Vercel handle request orchestration
+if (!process.env.VERCEL) {
+  bootstrap();
+}
+
+export default app;
