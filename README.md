@@ -1,20 +1,78 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# 🚀 Ravi Mali - Personal Portfolio
 
-# Run and deploy your AI Studio app
+Welcome to my personal portfolio website! This project showcases my skills, projects, and journey as a software developer.
 
-This contains everything you need to run your app locally.
+## 🌐 Live Demo
 
-View your app in AI Studio: https://ai.studio/apps/3cad9abe-d056-4d6b-81b0-a94618fd5178
+> Add your deployed website link here (Vercel/Netlify)
 
-## Run Locally
+## 📌 About
 
-**Prerequisites:**  Node.js
+This portfolio is designed to highlight my technical skills, projects, and professional background. It serves as a central place where recruiters and developers can learn more about me and my work.
 
+## ✨ Features
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+* Modern and responsive UI
+* Smooth scrolling navigation
+* Project showcase
+* Skills section
+* About Me section
+* Contact section
+* Mobile-friendly design
+* Clean and reusable code
+
+## 🛠️ Tech Stack
+
+* React.js
+* JavaScript (ES6+)
+* HTML5
+* CSS3
+* Vite
+
+## 📂 Project Structure
+
+```text
+src/
+ ├── components/
+ ├── assets/
+ ├── App.jsx
+ ├── main.jsx
+public/
+package.json
+```
+
+## 🚀 Getting Started
+
+Clone the repository
+
+```bash
+git clone https://github.com/ravimali-dev/ravi-mali-portfolio.git
+```
+
+Navigate to the project
+
+```bash
+cd ravi-mali-portfolio
+```
+
+Install dependencies
+
+```bash
+npm install
+```
+
+Start the development server
+
+```bash
+npm run dev
+```
+
+## 📬 Contact
+
+* GitHub: https://github.com/ravimali-dev
+* LinkedIn: Add your LinkedIn profile
+* Email: Add your email address
+
+## 📄 License
+
+This project is open source and available under the MIT License.
