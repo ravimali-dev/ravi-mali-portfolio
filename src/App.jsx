@@ -63,9 +63,14 @@ export default function App() {
   const [imageFormatIndex, setImageFormatIndex] = useState(0);
   const formats = [
     "https://imgh.in/images/866emx.png",
+    "https://images.imgh.in/866emx.png",
+    "https://images.imgh.in/raw/866emx.png",
+    "https://cdn.imgh.in/866emx.png",
     "https://imgh.in/images/866emx.jpg",
     "https://imgh.in/i/866emx.png",
     "https://imgh.in/i/866emx.jpg",
+    "https://images.imgh.in/866emx.jpg",
+    "https://cdn.imgh.in/866emx.jpg",
     "https://plain-apac-prod-public.komododecks.com/202606/09/rxtswuMzXBvoj8eRcXjG/image.jpg",
     "https://images.unsplash.com/photo-1607746882042-944635dfe10e?auto=format&fit=crop&q=80&w=600&h=600", // professional corporate developer
     "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=600&h=600" // premium backup
