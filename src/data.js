@@ -41,7 +41,7 @@ export const PROJECTS = [
     longDescription: "A modern video conferencing experience designed to enhance virtual communication capabilities, built with high-fidelity React controls, Node.js/Express, and MongoDB storage.",
     tech: ["React", "Node.js", "Express", "MongoDB", "Tailwind CSS"],
     image: "linear-gradient(135deg, #FF6B4A 0%, #101D2E 100%)",
-    liveUrl: "https://github.com/ravimali-dev/Minor-Project",
+    liveUrl: "https://minor-project-n6mx.onrender.com",
     githubUrl: "https://github.com/ravimali-dev/Minor-Project",
   },
   {
@@ -51,7 +51,7 @@ export const PROJECTS = [
     longDescription: "Features premium glassmorphic list components, secure user authentication (login, signup, session tokens) using Appwrite SDK endpoints, and streamlined Tailwind styles.",
     tech: ["React", "Tailwind CSS", "Appwrite", "JavaScript"],
     image: "linear-gradient(135deg, #8E2DE2 0%, #4A00E0 100%)",
-    liveUrl: "https://github.com/ravimali-dev/Blogify",
+    liveUrl: "https://blogify-three-rho.vercel.app/",
     githubUrl: "https://github.com/ravimali-dev/Blogify",
   },
   {
