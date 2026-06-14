@@ -58,50 +58,24 @@ export default function App() {
   const [downloadingResume, setDownloadingResume] = useState(false);
   const [downloadSuccess, setDownloadSuccess] = useState(false);
 
-  // Custom Avatar States with local persistence & automatic format checks
-  const [avatarSrc, setAvatarSrc] = useState(() => {
-    return localStorage.getItem("ravi_portfolio_avatar");
-  });
+  // Default Professional Avatar Format checks
   const [avatarError, setAvatarError] = useState(false);
   const [imageFormatIndex, setImageFormatIndex] = useState(0);
   const formats = [
+    "https://imgh.in/images/866emx.png",
+    "https://imgh.in/images/866emx.jpg",
+    "https://imgh.in/i/866emx.png",
+    "https://imgh.in/i/866emx.jpg",
     "https://plain-apac-prod-public.komododecks.com/202606/09/rxtswuMzXBvoj8eRcXjG/image.jpg",
-    "/assets/ravi_avatar.jpg",
-    "/assets/ravi_avatar.png",
-    "/assets/ravi_avatar.jpeg",
-    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=300&h=300" // premium unsplash developer placeholder as ultimate fallback
+    "https://images.unsplash.com/photo-1607746882042-944635dfe10e?auto=format&fit=crop&q=80&w=600&h=600", // professional corporate developer
+    "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=600&h=600" // premium backup
   ];
 
   const handleAvatarError = () => {
-    if (!avatarSrc) {
-      if (imageFormatIndex < formats.length - 1) {
-        setImageFormatIndex((prev) => prev + 1);
-      } else {
-        setAvatarError(true);
-      }
+    if (imageFormatIndex < formats.length - 1) {
+      setImageFormatIndex((prev) => prev + 1);
     } else {
-      // If base64 failed, clear it and fall back to local assets
-      setAvatarSrc(null);
-      setImageFormatIndex(0);
-    }
-  };
-
-  const handleAvatarUpload = (e) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result;
-        try {
-          localStorage.setItem("ravi_portfolio_avatar", base64String);
-          setAvatarSrc(base64String);
-          setAvatarError(false);
-          triggerSystemAlert("Avatar updated successfully!");
-        } catch (err) {
-          triggerSystemAlert("Image exceeds storage capacity. Try a smaller compressed file.");
-        }
-      };
-      reader.readAsDataURL(file);
+      setAvatarError(true);
     }
   };
 
@@ -505,22 +479,26 @@ export default function App() {
             <div className="absolute inset-0 rounded-full border border-white/10 animate-spin" style={{ animationDuration: '24s' }} />
             <div className="absolute inset-4 rounded-full border border-dashed border-[#FF6B4A]/20 animate-spin" style={{ animationDuration: '40s', animationDirection: 'reverse' }} />
             
-            {/* Central glass circle containing Ravi's visual avatar with custom image upload support */}
-            <div className="absolute inset-10 rounded-full bg-gradient-to-tr from-[#101D2E] to-[#07131F] border-2 border-white/15 overflow-hidden flex flex-col items-center justify-center shadow-2xl group cursor-pointer orange-glow-hover transition-all duration-500">
+            {/* Central glass circle containing Ravi's permanent professional developer profile image */}
+            <div className="absolute inset-10 rounded-full bg-gradient-to-tr from-[#101D2E] to-[#07131F] border-2 border-white/15 overflow-hidden flex flex-col items-center justify-center shadow-[0_0_50px_rgba(255,107,74,0.15)] group hover:shadow-[0_0_60px_rgba(255,107,74,0.3)] border-[#FF6B4A]/30 transition-all duration-500">
               
-              {/* Load custom image (uploaded Base64) or fallback assets */}
-              {(!avatarError && (avatarSrc || formats[imageFormatIndex])) ? (
-                <img 
-                  src={avatarSrc || formats[imageFormatIndex]} 
-                  alt="Ravi Mali Profile"
-                  referrerPolicy="no-referrer"
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 z-10"
-                  onError={handleAvatarError}
-                />
+              {/* Load permanent image or fallback assets */}
+              {!avatarError && formats[imageFormatIndex] ? (
+                <>
+                  <img 
+                    src={formats[imageFormatIndex]} 
+                    alt="Ravi Mali Profile"
+                    referrerPolicy="no-referrer"
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 z-10 filter brightness-[0.93] contrast-[1.05] group-hover:brightness-100"
+                    onError={handleAvatarError}
+                  />
+                  {/* Subtle technical gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none z-15 group-hover:from-black/30 transition-all duration-300" />
+                </>
               ) : null}
 
               {/* Standard text RM layout fallback when no images load */}
-              {(avatarError || (!avatarSrc && !formats[imageFormatIndex])) && (
+              {(avatarError || !formats[imageFormatIndex]) && (
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
                   <div className="absolute inset-0 bg-gradient-to-t from-[#FF6B4A]/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
                   
@@ -534,27 +512,6 @@ export default function App() {
                   </div>
                 </div>
               )}
-
-              {/* Upload dynamic layer showing on hover */}
-              <label 
-                htmlFor="avatar-upload"
-                className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 opacity-0 group-hover:opacity-100 transition-all duration-300 cursor-pointer text-center p-4 z-20"
-              >
-                <div className="p-2 rounded-lg bg-[#FF6B4A]/20 text-[#FF7B54] mb-2 border border-[#FF6B4A]/30">
-                  <User className="w-5 h-5 mx-auto" />
-                </div>
-                <span className="text-white text-xs font-bold tracking-tight">Upload Photo</span>
-                <span className="text-[10px] text-[#BFC8D6] font-mono mt-0.5">Click to select file</span>
-              </label>
-
-              {/* Hidden file input */}
-              <input 
-                type="file" 
-                id="avatar-upload" 
-                accept="image/*" 
-                onChange={handleAvatarUpload} 
-                className="hidden" 
-              />
             </div>
 
             {/* Floating tech badges */}
