@@ -131,6 +131,8 @@ export function generateResumePdf(options = {}) {
   text("Live Video Conferencing & Chat Web Application", margin, currentY, { fontSize: 9.5, fontStyle: "bold", color: colors.darkText });
   text("React, Node, Express, MongoDB, Tailwind CSS", 612 - margin, currentY, { fontSize: 8, fontStyle: "bold", color: colors.primary, align: "right" });
   currentY += 11;
+  text("Live Demo: minor-project-n6mx.onrender.com   |   GitHub: github.com/ravimali-dev/Minor-Project", margin, currentY, { fontSize: 8, fontStyle: "italic", color: colors.mutedText });
+  currentY += 11;
 
   const proj1Points = [
     "Engineered an interactive real-time video conferencing web layout with flexible WebRTC connection structures.",
@@ -146,11 +148,13 @@ export function generateResumePdf(options = {}) {
     doc.text(splitPoint, margin + 14, currentY);
     currentY += splitPoint.length * 11 + 1.5;
   });
-  currentY += 6;
+  currentY += 4;
 
   // Project 2
   text("Blogify: Modern Blogging Workspace", margin, currentY, { fontSize: 9.5, fontStyle: "bold", color: colors.darkText });
   text("React, Tailwind CSS, Appwrite BaaS, JavaScript", 612 - margin, currentY, { fontSize: 8, fontStyle: "bold", color: colors.primary, align: "right" });
+  currentY += 11;
+  text("Live Demo: blogify-three-rho.vercel.app   |   GitHub: github.com/ravimali-dev/Blogify", margin, currentY, { fontSize: 8, fontStyle: "italic", color: colors.mutedText });
   currentY += 11;
 
   const proj2Points = [
@@ -165,7 +169,7 @@ export function generateResumePdf(options = {}) {
     doc.text(splitPoint, margin + 14, currentY);
     currentY += splitPoint.length * 11 + 1.5;
   });
-  currentY += 6;
+  currentY += 4;
 
   // Project 3
   text("Interactive AI-Twin Developer Portfolio", margin, currentY, { fontSize: 9.5, fontStyle: "bold", color: colors.darkText });
